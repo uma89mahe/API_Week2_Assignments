@@ -1,0 +1,341 @@
+{
+	"info": {
+		"_postman_id": "2cd54ee6-8ede-412f-b463-2a64bd665c57",
+		"name": "PostmanChaining_CR",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "CreateChangeRequest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//any script or function which will execute after receiving the api response\r",
+							"\r",
+							"//1. Validate the status code is 201\r",
+							"pm.test(\"validate the status code is 201\", function(){\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"//2.Take the response Json\r",
+							"var response_json= pm.response.json();\r",
+							"//3.Traverse the json to the field sys_id and store in local variable\r",
+							"var local_sys_id= response_json.result.sys_id;\r",
+							"\r",
+							"// Assign the value to global_sys_id\r",
+							"pm.globals.set(\"gbl_sys_id\", local_sys_id);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "content_type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"description\": \"{{description}}\",\r\n    \"short_description\": \"{{short_description}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{env_host_name}}/api/now/table/{{col_table_name}}",
+					"protocol": "https",
+					"host": [
+						"{{env_host_name}}"
+					],
+					"path": [
+						"api",
+						"now",
+						"table",
+						"{{col_table_name}}"
+					],
+					"query": [
+						{
+							"key": "priority",
+							"value": "4",
+							"disabled": true
+						},
+						{
+							"key": "sysparm_fields",
+							"value": "category,short_description",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetChangeRequest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//any script or function which will execute after receiving the api response\r",
+							"\r",
+							"//1. Validate the status code is 200\r",
+							"pm.test(\"validate the status code is 200\", function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"//2.Take the response Json\r",
+							"var response_json= pm.response.json();\r",
+							"//3.Traverse the json to the field sys_id and store in local variable\r",
+							"var local_sys_id= response_json.result[0].sys_id;\r",
+							"\r",
+							"// Assign the value to global_sys_id\r",
+							"pm.globals.set(\"gbl_sys_id\", local_sys_id);\r",
+							"\r",
+							"//iterate through array& print all sys_id\r",
+							"\r",
+							"var size = response_json.result.length;\r",
+							"for(var i=0;i<size; i++){\r",
+							"    var local_sys_id_loop=response_json.result[i].sys_id;\r",
+							"    console.log(local_sys_id_loop);\r",
+							"}\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{env_host_name}}/api/now/table/{{col_table_name}}?sysparm_fields=sys_id,number,priority",
+					"protocol": "https",
+					"host": [
+						"{{env_host_name}}"
+					],
+					"path": [
+						"api",
+						"now",
+						"table",
+						"{{col_table_name}}"
+					],
+					"query": [
+						{
+							"key": "priority",
+							"value": "4",
+							"disabled": true
+						},
+						{
+							"key": "sysparm_fields",
+							"value": "sys_id,number,priority"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateCR",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//1. Validate the status code is 200\r",
+							"pm.test(\"validate the status code is 200\", function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "content_type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"short_description\": \"THis is change request update done from PostMan\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{env_host_name}}/api/now/table/{{col_table_name}}/{{gbl_sys_id}}",
+					"protocol": "https",
+					"host": [
+						"{{env_host_name}}"
+					],
+					"path": [
+						"api",
+						"now",
+						"table",
+						"{{col_table_name}}",
+						"{{gbl_sys_id}}"
+					],
+					"query": [
+						{
+							"key": "priority",
+							"value": "4",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete CR",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//1. Validate the status code is 204\r",
+							"pm.test(\"validate the status code is 204\", function(){\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					},
+					{
+						"key": "content_type",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{env_host_name}}/api/now/table/{{col_table_name}}/{{gbl_sys_id}}",
+					"protocol": "https",
+					"host": [
+						"{{env_host_name}}"
+					],
+					"path": [
+						"api",
+						"now",
+						"table",
+						"{{col_table_name}}",
+						"{{gbl_sys_id}}"
+					],
+					"query": [
+						{
+							"key": "priority",
+							"value": "4",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "username",
+				"value": "admin",
+				"type": "string"
+			},
+			{
+				"key": "password",
+				"value": "hpBPIFsdp94R",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "col_table_name",
+			"value": "change_request",
+			"type": "string"
+		}
+	]
+}
